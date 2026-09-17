@@ -1,0 +1,540 @@
+/* ==========================================================================
+   Tokens — from GLOBAL spec
+   ========================================================================== */
+:root {
+  --color-bg: #71736E;
+  --color-text: #FDFF87;
+  --color-interactive: #87EDFF; /* hover (desktop) / pressed (all devices) */
+
+  --font-body: 'Inter', sans-serif;
+  --font-heading: 'Anton', sans-serif;
+
+  /* Letter-spacing of -0.6% (Figma) = -0.006em in CSS (em scales with font-size,
+     so this stays correct at 20px and 78px alike without recalculating per element) */
+  --tracking-tight: -0.006em;
+
+  /* Layout constants, Mobile-S (360px) breakpoint */
+  --side-gap: 20px;
+  --top-gap: 20px;
+  --menu-bottom-gap: 20px;
+  --menu-height: 44px;
+  --menu-item-width: 82px;
+  --heading-menu-gap: 60px; /* space between bottom heading line and menu */
+}
+
+/* ==========================================================================
+   Reset (minimal, only what this page needs)
+   ========================================================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  /* No hover/focus color changes per spec — but focus outline must stay visible
+     for keyboard users since nothing else signals interactivity on this page */
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Icons live inside links and should inherit the link's current color
+   automatically — build any future icon SVGs with fill="currentColor"
+   so this rule covers them without a separate declaration per icon. */
+
+/* Pressed state — works on every input type, including touch, so this
+   applies at all breakpoints unconditionally. */
+a:active {
+  color: var(--color-interactive);
+}
+
+/* Hover state — gated to devices that actually have a real pointer.
+   Without this guard, touchscreens fire :hover on tap and can leave the
+   state stuck until the user taps elsewhere, which reads as a bug rather
+   than feedback. This is about input capability, not screen width, so it
+   applies the same way across all five breakpoints. */
+@media (hover: hover) and (pointer: fine) {
+  a:hover {
+    color: var(--color-interactive);
+  }
+}
+
+a:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Hero / heading
+   ========================================================================== */
+.hero {
+  position: relative;
+  min-height: 100dvh; /* dvh accounts for mobile browser chrome, safer than vh */
+  overflow: hidden;
+}
+
+.site-name {
+  /* One H1 element in the DOM — screen readers announce "MARINA AGLIULLINA"
+     as a single continuous heading regardless of the visual split below */
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  pointer-events: none; /* text itself isn't interactive, avoid stray hit-testing */
+
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 78px;
+  line-height: 1;
+  letter-spacing: var(--tracking-tight);
+}
+
+.site-name__first {
+  padding-top: var(--top-gap);
+}
+
+.site-name__last {
+  /* Sits 60px above the menu. Menu occupies (menu-bottom-gap + menu-height)
+     from the very bottom, so add heading-menu-gap on top of that. */
+  padding-bottom: calc(var(--menu-bottom-gap) + var(--menu-height) + var(--heading-menu-gap));
+}
+
+/* ==========================================================================
+   Slideshow
+   ========================================================================== */
+.slideshow {
+  position: absolute;
+  /* top is set dynamically by script.js — it centers on the actual gap
+     between the two heading lines, not the viewport midpoint, since those
+     aren't the same point once the menu's reserved space is accounted for */
+  top: 50%; /* fallback before JS runs */
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  /* Fixed footprint per spec: 320x240 landscape by default.
+     JS toggles a --portrait state (240x320) per current image's orientation. */
+  width: 320px;
+  height: 240px;
+
+  background: #D9D9D9; /* placeholder fill until real photos are in */
+  z-index: 1; /* sits below heading text where they overlap, per "covered by heading" */
+}
+
+.slideshow.slideshow--portrait {
+  width: 240px;
+  height: 320px;
+}
+
+.slideshow img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.site-name {
+  z-index: 2; /* heading renders above the slideshow on overlap */
+}
+
+/* ==========================================================================
+   Menu
+   ========================================================================== */
+.menu {
+  position: fixed;
+  left: var(--side-gap);
+  right: var(--side-gap);
+  bottom: var(--menu-bottom-gap);
+  height: var(--menu-height);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 3; /* menu always on top */
+}
+
+.menu__item {
+  width: var(--menu-item-width);
+  height: var(--menu-height);
+  display: flex;
+  align-items: center;
+
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: var(--tracking-tight);
+}
+
+.menu__item--left {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.menu__item--center {
+  justify-content: center;
+  text-align: center;
+}
+
+.menu__item--right {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+/* ==========================================================================
+   Mobile-L (480px+)
+   Layout logic is identical to Mobile-S — only type scale and menu
+   container size change, to fit the larger font sizes.
+   ========================================================================== */
+@media (min-width: 480px) {
+  :root {
+    --menu-height: 48px;
+    --menu-item-width: 90px;
+    /* --heading-menu-gap, --menu-bottom-gap, --side-gap, --top-gap unchanged —
+       the calc() in .site-name__last picks up the new --menu-height
+       automatically since it's a CSS custom property, not a hardcoded value */
+  }
+
+  .site-name {
+    font-size: 86px;
+  }
+
+  .menu__item {
+    font-size: 24px;
+  }
+}
+
+/* ==========================================================================
+   Desktop-S (1200px+)
+   Structural change, not just a scale-up: the heading switches from a
+   vertical stack (top line / bottom line) to a horizontal row, both halves
+   pinned to the top. Menu drops its fixed touch-target box since pointer
+   input doesn't need one. Slideshow image footprint scales up.
+   ========================================================================== */
+@media (min-width: 1200px) {
+  :root {
+    --side-gap: 60px;
+    --top-gap: 60px;
+    --menu-bottom-gap: 60px;
+  }
+
+  .site-name {
+    flex-direction: row;
+    align-items: flex-start; /* both halves pinned to the top, not split top/bottom */
+    justify-content: space-between;
+    padding: var(--top-gap) var(--side-gap) 0;
+    font-size: 148px;
+    /* This size is unique to this page/breakpoint — still an <h1> though:
+       font-size is presentation, not a reason to change the semantic element */
+  }
+
+  .site-name__first {
+    padding-top: 0; /* was mobile-only; container padding above handles it now */
+    text-align: left;
+  }
+
+  .site-name__last {
+    padding-bottom: 0; /* mobile reserved space for the menu no longer applies */
+    text-align: right;
+  }
+
+  .menu {
+    left: var(--side-gap);
+    right: var(--side-gap);
+    bottom: var(--menu-bottom-gap);
+    height: auto; /* no fixed touch-target box on desktop */
+  }
+
+  .menu__item {
+    width: 72px; /* fixed container, per spec — not auto as I'd assumed earlier */
+    height: auto; /* TBD: confirm if this should be a fixed value instead */
+    font-size: 20px;
+  }
+
+  .slideshow {
+    width: 516px;
+    height: 387px;
+  }
+
+  .slideshow.slideshow--portrait {
+    width: 387px;
+    height: 516px;
+  }
+}
+
+/* ==========================================================================
+   Desktop-M (1400px+)
+   Only the heading font-size changes — everything else (paddings, menu,
+   image sizes) carries over unchanged from Desktop-S.
+   ========================================================================== */
+@media (min-width: 1400px) {
+  .site-name {
+    font-size: 180px;
+  }
+}
+
+/* ==========================================================================
+   Desktop between M and L (1600px+)
+   Only the heading font-size changes from Desktop-M.
+   ========================================================================== */
+@media (min-width: 1600px) {
+  .site-name {
+    font-size: 200px;
+  }
+}
+
+/* ==========================================================================
+   Desktop-L (1920px+)
+   Only heading size, menu item font-size + container width, and slideshow
+   image footprint change — paddings and structure carry over from Desktop-S.
+   ========================================================================== */
+@media (min-width: 1920px) {
+  .site-name {
+    font-size: 240px;
+  }
+
+  .menu__item {
+    width: 160px;
+    font-size: 40px;
+  }
+
+  .slideshow {
+    width: 698px;
+    height: 523px;
+  }
+
+  .slideshow.slideshow--portrait {
+    width: 523px;
+    height: 698px;
+  }
+}
+
+/* ==========================================================================
+   About page (and other content pages sharing this pattern)
+   ========================================================================== */
+.page {
+  padding: 0 var(--side-gap) calc(var(--menu-height) + var(--menu-bottom-gap) + 40px);
+  /* top padding removed — the fixed header (below) now reserves that space
+     dynamically via --header-height, since its height varies by breakpoint */
+}
+
+.page-title {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 6; /* same tier as the bottom menu — fixed chrome above scrolling content */
+  background: var(--color-bg); /* the title's own box acts as its own backdrop,
+                                   since it already spans edge-to-edge */
+  padding: var(--top-gap) var(--side-gap) 32px;
+
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 78px;
+  line-height: 1;
+  letter-spacing: var(--tracking-tight);
+  text-align: center;
+}
+
+.page-content {
+  /* Pushes scrollable content below the fixed header. Falls back to an
+     approximate value before JS measures the real height, to avoid a flash
+     of overlapping content on first paint. */
+  padding-top: var(--header-height, 130px);
+}
+
+.page-content p {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: 0;
+  margin: 0 0 10px; /* between paragraphs; collapses correctly against h2 below */
+}
+
+.page-content h2 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  margin: 40px 0 10px;
+  /* Margin collapsing does the rest of the work here: this 40px collapses
+     against the preceding paragraph's 10px margin-bottom to produce
+     exactly 40px between sections (the browser takes the larger of the
+     two, not the sum) — and this same h2's 10px margin-bottom collapses
+     against the next paragraph's lack of a top margin to produce exactly
+     10px after the heading. No extra rules needed to hit those two numbers. */
+}
+
+.page-content > h2:first-child {
+  /* Direct-child selector matters here: this only zeroes the gap when an H2
+     is literally the first element in .page-content (a page with no lead
+     paragraph before its sections). It must NOT match an H2 that's merely
+     first inside .col-sections — that H2 sits after a whole separate lead
+     paragraph in the sibling column, so it still needs its full 40px gap. */
+  margin-top: 0;
+}
+
+/* Fixed bottom menu, shared pattern: solid backdrop spans full width so
+   scrolling content can't visually collide with the menu labels; the menu
+   itself keeps the standard side-gap inset. */
+.menu-backdrop {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--menu-height) + var(--menu-bottom-gap));
+  background: var(--color-bg);
+  z-index: 5;
+}
+
+.menu {
+  z-index: 6; /* above the backdrop */
+}
+
+/* ==========================================================================
+   Content pages at 1200px+ (About, and future pages sharing this pattern):
+   the mobile top-bar/bottom-bar header+menu become a left sidebar instead.
+   Scoped under .content-page so this can't leak into the homepage, which
+   shares the .menu / .menu__item / .page-title class names but keeps its
+   own distinct desktop layout (horizontal bar, not a sidebar).
+   ========================================================================== */
+@media (min-width: 1200px) {
+  .content-page .page {
+    padding: 0; /* mobile's reserved space for the fixed bottom bar no longer applies */
+  }
+
+  .content-page .page-title {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: auto; /* bug fix: mobile's right:0 was still inherited here,
+                    stretching this full-width instead of hugging the H1 —
+                    which then fed a wrong (huge) --sidebar-width into JS
+                    and pushed .page-content off-screen */
+    width: auto;
+    text-align: left;
+    padding: 60px 60px 0 60px;
+    font-size: 92px;
+  }
+
+  .content-page .page-content {
+    /* Offsets past the sidebar. --sidebar-width is measured at runtime from
+       the actual rendered width of .page-title (see layout.js) since the
+       sidebar has no fixed value — it hugs whatever title text is on the
+       page, so this can't be a hardcoded number. */
+    margin-left: var(--sidebar-width, 300px);
+    width: 588px;
+    padding: 60px 0;
+  }
+
+  .content-page .menu-backdrop {
+    display: none; /* sidebar and content are separate columns here — no
+                       scrolling overlap to hide, unlike on mobile */
+  }
+
+  .content-page .menu {
+    left: 0;
+    right: auto;
+    bottom: 0;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* menu items align to the left edge, not stretched/centered */
+    gap: 20px;
+    padding: 0 0 60px 60px;
+  }
+
+  .content-page .menu__item {
+    width: auto;
+    height: auto;
+  }
+}
+
+/* ==========================================================================
+   Content pages, 1400px+ (covers both 1400 and 1600 — identical per spec,
+   a single min-width block covers both without duplication)
+   ========================================================================== */
+@media (min-width: 1400px) {
+  .content-page .page-content {
+    width: 748px;
+  }
+}
+
+/* ==========================================================================
+   Content pages, 1920px+: two fixed-width columns instead of one.
+   Column 1 = lead paragraph, column 2 = the H2 sections — confirmed as the
+   general rule for this layout, not a one-off for this page.
+   ========================================================================== */
+@media (min-width: 1920px) {
+  .content-page .page-title {
+    font-size: 120px;
+  }
+
+  .content-page .menu {
+    gap: 40px;
+  }
+
+  .content-page .menu__item {
+    font-size: 40px;
+    letter-spacing: 0; /* menu tracking is normally -0.6% (--tracking-tight) —
+                           explicitly flat at this breakpoint per spec */
+  }
+
+  .content-page .page-content {
+    display: flex;
+    flex-direction: row;
+    gap: 60px;
+    width: auto; /* two fixed-width children below define the real width,
+                    not this container */
+  }
+
+  .content-page .col-lead,
+  .content-page .col-sections {
+    width: 612px;
+    flex-shrink: 0;
+  }
+
+  .content-page .col-sections > h2:first-child {
+    /* Below 1920px this same H2's 40px margin-top is correct — it collapses
+       with .col-lead's paragraph margin in single-column flow, producing
+       the intended section gap. But once .col-lead/.col-sections become
+       flex items (this breakpoint), each is its own box: that margin no
+       longer collapses with anything outside it and just pushes this
+       column's content down from the top, misaligning it against the
+       lead column. Zeroing it here (and only here) keeps both columns
+       flush at the top while leaving the narrower-breakpoint behavior intact. */
+    margin-top: 0;
+  }
+
+  .content-page .page-content p {
+    font-size: 24px;
+    line-height: 32px;
+  }
+
+  .content-page .page-content h2 {
+    font-size: 32px;
+  }
+
+  .content-page .page-content h2,
+  .content-page .page-content p {
+    /* Section/paragraph rhythm doubles at this breakpoint (10px → 20px).
+       Applying this to both columns is harmless — the lead column only
+       has one paragraph, so there's nothing adjacent for it to space
+       against; the visible effect is entirely in .col-sections. */
+    margin-bottom: 20px;
+  }
+}
