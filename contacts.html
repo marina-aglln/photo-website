@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contacts — Marina Agliullina</title>
+
+<!-- TEMP: Google Fonts CDN — swap to self-hosted @font-face once .woff2 files are ready -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css?v=2">
+</head>
+<body class="content-page contacts-page">
+
+<main class="page">
+  <h1 class="page-title">CONTACTS</h1>
+
+  <div class="page-content contacts-content">
+    <!-- Hidden below 1200px via CSS — mobile has no photo on this page -->
+    <div class="contacts-photo" aria-hidden="true"></div>
+
+    <div class="contact-info">
+      <div class="contact-section">
+        <h2>Email</h2>
+        <a href="#" class="contact-link" id="email-link" data-email="hi@marinatakespictures.com">
+          <span class="contact-link__text">hi@marinatakespictures.com</span>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M20 13.1251L20 6.00003C20 4.34317 18.6568 3.00002 17 3.00004L9.875 3.00012M14 21.0001L7.25 21.0001C6.00736 21.0001 5 19.9928 5 18.7501L5 9.00012C5 7.75748 6.00736 6.75012 7.25 6.75012L14 6.75012C15.2426 6.75011 16.25 7.75748 16.25 9.00012L16.25 18.7501C16.25 19.9928 15.2426 21.0001 14 21.0001Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </a>
+      </div>
+
+      <div class="contact-section">
+        <h2>Instagram</h2>
+        <!-- Plain https link — iOS/Android already open Instagram's own app
+             automatically for these URLs when it's installed, via Instagram's
+             universal/app-link setup. No custom app-detection JS needed. -->
+        <a href="https://www.instagram.com/marinatakespictures" class="contact-link" target="_blank" rel="noopener noreferrer">
+          <span class="contact-link__text">@marinatakespictures</span>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M11.5625 5H7.8125C6.2592 5 5 6.25919 5 7.81248V17.1875C5 18.7408 6.2592 20 7.8125 20H17.1875C18.7408 20 20 18.7408 20 17.1875V13.4375M20 9.21884V5L15.312 5.00023M20 5L12.0306 12.9685" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="menu-backdrop" aria-hidden="true"></div>
+
+<nav class="menu" aria-label="Primary">
+  <a href="index.html" class="menu__item menu__item--left">main</a>
+  <a href="work.html" class="menu__item menu__item--center">work</a>
+  <a href="about.html" class="menu__item menu__item--right">about</a>
+</nav>
+
+<script src="layout.js"></script>
+<script src="contacts.js"></script>
+</body>
+</html>

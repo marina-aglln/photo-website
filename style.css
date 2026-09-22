@@ -1,0 +1,1038 @@
+/* ==========================================================================
+   Tokens — from GLOBAL spec
+   ========================================================================== */
+:root {
+  --color-bg: #71736E;
+  --color-text: #FDFF87;
+  --color-interactive: #87EDFF; /* hover (desktop) / pressed (all devices) */
+
+  --font-body: 'Inter', sans-serif;
+  --font-heading: 'Anton', sans-serif;
+
+  /* Letter-spacing of -0.6% (Figma) = -0.006em in CSS (em scales with font-size,
+     so this stays correct at 20px and 78px alike without recalculating per element) */
+  --tracking-tight: -0.006em;
+
+  /* Layout constants, Mobile-S (360px) breakpoint */
+  --side-gap: 20px;
+  --top-gap: 20px;
+  --menu-bottom-gap: 20px;
+  --menu-height: 44px;
+  --menu-item-width: 82px;
+  --heading-menu-gap: 60px; /* space between bottom heading line and menu */
+}
+
+/* ==========================================================================
+   Reset (minimal, only what this page needs)
+   ========================================================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  /* No hover/focus color changes per spec — but focus outline must stay visible
+     for keyboard users since nothing else signals interactivity on this page */
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Icons live inside links and should inherit the link's current color
+   automatically — build any future icon SVGs with fill="currentColor"
+   so this rule covers them without a separate declaration per icon. */
+
+.icon {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  flex-shrink: 0; /* keeps the icon from being squeezed if its link's
+                      layout gets tight (e.g. inside a flex row) */
+}
+
+@media (min-width: 1920px) {
+  .icon {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* Pressed state — works on every input type, including touch, so this
+   applies at all breakpoints unconditionally. */
+a:active {
+  color: var(--color-interactive);
+}
+
+/* Hover state — gated to devices that actually have a real pointer.
+   Without this guard, touchscreens fire :hover on tap and can leave the
+   state stuck until the user taps elsewhere, which reads as a bug rather
+   than feedback. This is about input capability, not screen width, so it
+   applies the same way across all five breakpoints. */
+@media (hover: hover) and (pointer: fine) {
+  a:hover {
+    color: var(--color-interactive);
+  }
+}
+
+a:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Hero / heading
+   ========================================================================== */
+.hero {
+  position: relative;
+  min-height: 100dvh; /* dvh accounts for mobile browser chrome, safer than vh */
+  overflow: hidden;
+}
+
+.site-name {
+  /* One H1 element in the DOM — screen readers announce "MARINA AGLIULLINA"
+     as a single continuous heading regardless of the visual split below */
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  pointer-events: none; /* text itself isn't interactive, avoid stray hit-testing */
+
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 78px;
+  line-height: 1;
+  letter-spacing: var(--tracking-tight);
+}
+
+.site-name__first {
+  padding-top: var(--top-gap);
+}
+
+.site-name__last {
+  /* Sits 60px above the menu. Menu occupies (menu-bottom-gap + menu-height)
+     from the very bottom, so add heading-menu-gap on top of that. */
+  padding-bottom: calc(var(--menu-bottom-gap) + var(--menu-height) + var(--heading-menu-gap));
+}
+
+/* ==========================================================================
+   Slideshow
+   ========================================================================== */
+.slideshow {
+  position: absolute;
+  /* top is set dynamically by script.js — it centers on the actual gap
+     between the two heading lines, not the viewport midpoint, since those
+     aren't the same point once the menu's reserved space is accounted for */
+  top: 50%; /* fallback before JS runs */
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  /* Fixed footprint per spec: 320x240 landscape by default.
+     JS toggles a --portrait state (240x320) per current image's orientation. */
+  width: 320px;
+  height: 240px;
+
+  background: #D9D9D9; /* placeholder fill until real photos are in */
+  z-index: 1; /* sits below heading text where they overlap, per "covered by heading" */
+}
+
+.slideshow.slideshow--portrait {
+  width: 240px;
+  height: 320px;
+}
+
+.slideshow img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.site-name {
+  z-index: 2; /* heading renders above the slideshow on overlap */
+}
+
+/* ==========================================================================
+   Menu
+   ========================================================================== */
+.menu {
+  position: fixed;
+  left: var(--side-gap);
+  right: var(--side-gap);
+  bottom: var(--menu-bottom-gap);
+  height: var(--menu-height);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 3; /* menu always on top */
+}
+
+.menu__item {
+  width: var(--menu-item-width);
+  height: var(--menu-height);
+  display: flex;
+  align-items: center;
+
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: var(--tracking-tight);
+}
+
+.menu__item--left {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.menu__item--center {
+  justify-content: center;
+  text-align: center;
+}
+
+.menu__item--right {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+/* ==========================================================================
+   Mobile-L (480px+)
+   Layout logic is identical to Mobile-S — only type scale and menu
+   container size change, to fit the larger font sizes.
+   ========================================================================== */
+@media (min-width: 480px) {
+  :root {
+    --menu-height: 48px;
+    --menu-item-width: 90px;
+    /* --heading-menu-gap, --menu-bottom-gap, --side-gap, --top-gap unchanged —
+       the calc() in .site-name__last picks up the new --menu-height
+       automatically since it's a CSS custom property, not a hardcoded value */
+  }
+
+  .site-name {
+    font-size: 86px;
+  }
+
+  .menu__item {
+    font-size: 24px;
+  }
+}
+
+/* ==========================================================================
+   Desktop-S (1200px+)
+   Structural change, not just a scale-up: the heading switches from a
+   vertical stack (top line / bottom line) to a horizontal row, both halves
+   pinned to the top. Menu drops its fixed touch-target box since pointer
+   input doesn't need one. Slideshow image footprint scales up.
+   ========================================================================== */
+@media (min-width: 1200px) {
+  :root {
+    --side-gap: 60px;
+    --top-gap: 60px;
+    --menu-bottom-gap: 60px;
+  }
+
+  .site-name {
+    flex-direction: row;
+    align-items: flex-start; /* both halves pinned to the top, not split top/bottom */
+    justify-content: space-between;
+    padding: var(--top-gap) var(--side-gap) 0;
+    font-size: 148px;
+    /* This size is unique to this page/breakpoint — still an <h1> though:
+       font-size is presentation, not a reason to change the semantic element */
+  }
+
+  .site-name__first {
+    padding-top: 0; /* was mobile-only; container padding above handles it now */
+    text-align: left;
+  }
+
+  .site-name__last {
+    padding-bottom: 0; /* mobile reserved space for the menu no longer applies */
+    text-align: right;
+  }
+
+  .menu {
+    left: var(--side-gap);
+    right: var(--side-gap);
+    bottom: var(--menu-bottom-gap);
+    height: auto; /* no fixed touch-target box on desktop */
+  }
+
+  .menu__item {
+    width: 72px; /* fixed container, per spec — not auto as I'd assumed earlier */
+    height: auto; /* TBD: confirm if this should be a fixed value instead */
+    font-size: 20px;
+  }
+
+  .slideshow {
+    width: 516px;
+    height: 387px;
+  }
+
+  .slideshow.slideshow--portrait {
+    width: 387px;
+    height: 516px;
+  }
+}
+
+/* ==========================================================================
+   Desktop-M (1400px+)
+   Only the heading font-size changes — everything else (paddings, menu,
+   image sizes) carries over unchanged from Desktop-S.
+   ========================================================================== */
+@media (min-width: 1400px) {
+  .site-name {
+    font-size: 180px;
+  }
+}
+
+/* ==========================================================================
+   Desktop between M and L (1600px+)
+   Only the heading font-size changes from Desktop-M.
+   ========================================================================== */
+@media (min-width: 1600px) {
+  .site-name {
+    font-size: 200px;
+  }
+}
+
+/* ==========================================================================
+   Desktop-L (1920px+)
+   Only heading size, menu item font-size + container width, and slideshow
+   image footprint change — paddings and structure carry over from Desktop-S.
+   ========================================================================== */
+@media (min-width: 1920px) {
+  .site-name {
+    font-size: 240px;
+  }
+
+  .menu__item {
+    width: 160px;
+    font-size: 40px;
+  }
+
+  .slideshow {
+    width: 698px;
+    height: 523px;
+  }
+
+  .slideshow.slideshow--portrait {
+    width: 523px;
+    height: 698px;
+  }
+}
+
+/* ==========================================================================
+   About page (and other content pages sharing this pattern)
+   ========================================================================== */
+.page {
+  padding: 0 var(--side-gap) calc(var(--menu-height) + var(--menu-bottom-gap) + 40px);
+  /* top padding removed — the fixed header (below) now reserves that space
+     dynamically via --header-height, since its height varies by breakpoint */
+}
+
+.page-title {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 6; /* same tier as the bottom menu — fixed chrome above scrolling content */
+  background: var(--color-bg); /* the title's own box acts as its own backdrop,
+                                   since it already spans edge-to-edge */
+  padding: var(--top-gap) var(--side-gap) 32px;
+
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 78px;
+  line-height: 1;
+  letter-spacing: var(--tracking-tight);
+  text-align: center;
+}
+
+.page-content {
+  /* Pushes scrollable content below the fixed header. Falls back to an
+     approximate value before JS measures the real height, to avoid a flash
+     of overlapping content on first paint. */
+  padding-top: var(--header-height, 130px);
+}
+
+.page-content p {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: 0;
+  margin: 0 0 10px; /* between paragraphs; collapses correctly against h2 below */
+}
+
+.page-content h2 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: 0.008em; /* 0.8% (Figma) converted to em, same approach
+                               used for --tracking-tight elsewhere on the
+                               site — scales correctly if this size ever
+                               changes per breakpoint (it already does, to
+                               32px on About at 1920) without recalculating */
+  text-transform: uppercase;
+  margin: 40px 0 10px;
+  /* Margin collapsing does the rest of the work here: this 40px collapses
+     against the preceding paragraph's 10px margin-bottom to produce
+     exactly 40px between sections (the browser takes the larger of the
+     two, not the sum) — and this same h2's 10px margin-bottom collapses
+     against the next paragraph's lack of a top margin to produce exactly
+     10px after the heading. No extra rules needed to hit those two numbers. */
+}
+
+.page-content > h2:first-child {
+  /* Direct-child selector matters here: this only zeroes the gap when an H2
+     is literally the first element in .page-content (a page with no lead
+     paragraph before its sections). It must NOT match an H2 that's merely
+     first inside .col-sections — that H2 sits after a whole separate lead
+     paragraph in the sibling column, so it still needs its full 40px gap. */
+  margin-top: 0;
+}
+
+/* Fixed bottom menu, shared pattern: solid backdrop spans full width so
+   scrolling content can't visually collide with the menu labels; the menu
+   itself keeps the standard side-gap inset. */
+.menu-backdrop {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--menu-height) + var(--menu-bottom-gap));
+  background: var(--color-bg);
+  z-index: 5;
+}
+
+.menu {
+  z-index: 6; /* above the backdrop */
+}
+
+/* ==========================================================================
+   Content pages at 1200px+ (About, and future pages sharing this pattern):
+   the mobile top-bar/bottom-bar header+menu become a left sidebar instead.
+   Scoped under .content-page so this can't leak into the homepage, which
+   shares the .menu / .menu__item / .page-title class names but keeps its
+   own distinct desktop layout (horizontal bar, not a sidebar).
+   ========================================================================== */
+@media (min-width: 1200px) {
+  .content-page .page {
+    padding: 0; /* mobile's reserved space for the fixed bottom bar no longer applies */
+  }
+
+  .content-page .page-title {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: auto; /* bug fix: mobile's right:0 was still inherited here,
+                    stretching this full-width instead of hugging the H1 —
+                    which then fed a wrong (huge) --sidebar-width into JS
+                    and pushed .page-content off-screen */
+    /* Explicit width, computed once in JS from the H1's real rendered size
+       plus this box's own padding (see layout.js) — not `auto` relying on
+       the browser's shrink-to-fit behavior, which had no guaranteed
+       relationship to the separate value used for .page-content's offset.
+       Both now come from the same single calculation. */
+    width: var(--sidebar-width, 300px);
+    text-align: left;
+    padding: 60px 60px 0 60px;
+    font-size: 92px;
+  }
+
+  .content-page .page-content {
+    /* Offsets past the sidebar. --sidebar-width is measured at runtime from
+       the actual rendered width of .page-title (see layout.js) since the
+       sidebar has no fixed value — it hugs whatever title text is on the
+       page, so this can't be a hardcoded number. */
+    margin-left: var(--sidebar-width, 300px);
+    width: 588px;
+    padding: 60px 0;
+  }
+
+  .content-page .menu-backdrop {
+    display: none; /* sidebar and content are separate columns here — no
+                       scrolling overlap to hide, unlike on mobile */
+  }
+
+  .content-page .menu {
+    left: 0;
+    right: auto;
+    bottom: 0;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* menu items align to the left edge, not stretched/centered */
+    gap: 20px;
+    padding: 0 0 60px 60px;
+  }
+
+  .content-page .menu__item {
+    width: auto;
+    height: auto;
+  }
+}
+
+/* ==========================================================================
+   Content pages, 1400px+ (covers both 1400 and 1600 — identical per spec,
+   a single min-width block covers both without duplication)
+   ========================================================================== */
+@media (min-width: 1400px) {
+  .content-page .page-content {
+    width: 748px;
+  }
+}
+
+/* ==========================================================================
+   Work page gallery
+   ========================================================================== */
+.gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 32px; /* spacing between cards */
+}
+
+.gallery-card {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.gallery-card__image {
+  width: 100%;
+  aspect-ratio: 3 / 4; /* fixed proportions — width is fluid, height follows */
+  background: #D9D9D9; /* placeholder fill until real photos are in */
+}
+
+.gallery-card .gallery-card__caption {
+  /* Specificity note: plain .gallery-card__caption alone was losing to the
+     About page's ".page-content p" rule (which also matches this element,
+     since it's nested inside .page-content too) — that rule's margin
+     (0 0 10px) was silently overriding this one's intended margin-top.
+     Combining with the parent class here raises specificity enough to win
+     without needing !important. */
+  margin: 10px 0 0;
+  text-align: center;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: 0;
+
+  min-height: 24px; /* one line */
+  max-height: 48px; /* two lines — hard cap */
+  overflow: hidden;
+
+  /* Line-clamp to 2 lines, then ellipsis on overflow. Both the standard and
+     -webkit- prefixed properties are included since Safari still needs the
+     prefix even though the unprefixed version now works in Chrome/Firefox. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-clamp: 2;
+  text-overflow: ellipsis;
+}
+
+/* Work page specifically needs wider side padding at 480px than the shared
+   --side-gap token provides (which stays 20px here for the fixed header
+   and menu — confirmed by measuring the mockup — and must stay 20px on
+   the About page too, which already relies on it at this width). Scoping
+   this to .work-page keeps it from leaking into either of those.
+   Bounded to max-width:1199px so it can't fight the desktop reset below. */
+@media (min-width: 480px) and (max-width: 1199px) {
+  .work-page .page {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
+
+/* ==========================================================================
+   Work page, 1200px+ (identical at 1400px too, per spec — one block covers
+   both). Reuses the About page's sidebar (.content-page .page-title /
+   .menu) entirely unchanged; only the content area becomes a fixed 3-column
+   image grid instead of a text column.
+   ========================================================================== */
+@media (min-width: 1200px) {
+  .work-page .page-content {
+    width: auto; /* overrides the About page's fixed 588px column width */
+  }
+
+  .work-page .gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 226px);
+    gap: 60px;
+    /* Flush-left again (reverted from centered) — grid's default
+       justify-content already places fixed-width tracks at the start of
+       the container, so no explicit property is needed here. Applies at
+       every desktop breakpoint from here up, since nothing below overrides
+       it. */
+  }
+
+  .work-page .gallery-card__image {
+    width: 226px;
+    height: 300px;
+    aspect-ratio: auto; /* both dimensions are fixed here, unlike mobile's
+                            fluid-width/fixed-ratio approach */
+  }
+
+  .work-page .gallery-card__caption {
+    width: 226px;
+    height: 48px; /* fixed, not the mobile min/max range — still capped at
+                     2 lines via the line-clamp rules already in place */
+  }
+
+  /* Visual reorder only, DOM order stays about/main/contacts (matches the
+     already-tested mobile markup — see note below on why this can't just
+     be swapped in the HTML). Desktop shows main/about/contacts instead. */
+  .work-page .menu__item--left {
+    order: 2; /* "about" */
+  }
+
+  .work-page .menu__item--center {
+    order: 1; /* "main" */
+  }
+
+  .work-page .menu__item--right {
+    order: 3; /* "contacts" — unchanged position */
+  }
+  /* Accessibility note: this changes the VISUAL order only. Keyboard tab
+     order and screen-reader reading order still follow the DOM sequence
+     (about → main → contacts), which will now read in a different order
+     than it visually appears at this breakpoint. This is a known trade-off
+     of CSS `order` — flagging it rather than treating it as fully solved. */
+}
+
+/* ==========================================================================
+   Work page, 1600px+ (and 1920px, which shares this image size — only
+   caption typography differs further at 1920, handled below)
+   ========================================================================== */
+@media (min-width: 1600px) {
+  .work-page .gallery {
+    grid-template-columns: repeat(3, 301px);
+  }
+
+  .work-page .gallery-card__image {
+    width: 301px;
+    height: 400px;
+  }
+
+  .work-page .gallery-card__caption {
+    width: 301px;
+    height: 48px; /* same as 1400 — body text size doesn't change until 1920 */
+  }
+}
+
+/* ==========================================================================
+   Work page, 1920px+: caption typography matches the About page's 1920px
+   body text (24px/32px), which Work's caption doesn't inherit automatically
+   since it's a separate rule, not the same selector chain. Height grows to
+   fit that larger text, per spec (60px, not a plain 2x of 32 — taking the
+   given number rather than recomputing it, consistent with how font-metric
+   leading has made exact multiples slightly off elsewhere on this site).
+   ========================================================================== */
+@media (min-width: 1920px) {
+  .work-page .gallery-card__caption {
+    height: 60px;
+    font-size: 24px;
+    line-height: 32px;
+  }
+}
+
+/* ==========================================================================
+   Gallery detail page (reusable template for each of the 12 project pages
+   linked from Work). Isolated in its own class rather than reusing
+   .work-page, deliberately — this project's kept hitting bugs from rules
+   scoped to a shared class leaking across pages that only coincidentally
+   share some values today but may need to diverge once desktop specs for
+   this page exist.
+   ========================================================================== */
+.gallery-detail-page .page-title {
+  /* This box now wraps BOTH the H1 and the gallery name (see HTML) instead
+     of being the H1 itself, unlike About/Work. All the typography set on
+     the shared .page-title rule (font-family, size, line-height, letter-
+     spacing, text-align) still reaches the nested <h1> correctly since
+     those properties inherit — only non-inherited properties (padding,
+     specific overrides below) need restating here. */
+  padding-bottom: 16px; /* the box's own bottom spacing, per spec */
+}
+
+.page-title h1 {
+  /* Fixes a real bug: this selector only ever matches gallery.html, the one
+     page where .page-title is a wrapping div around a bare <h1> (About/Work
+     apply the class directly to their own <h1>, so they never hit this).
+     Browsers ship a default stylesheet rule for h1 (font-size: 2em,
+     font-weight: bold, plus block margins) that wins over inheritance from
+     the parent, regardless of whatever font-size the parent .page-title
+     box actually has. `inherit` here forces it to take the parent's real
+     computed values instead of that browser default. */
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  margin: 0;
+}
+
+.gallery-title {
+  margin: 12px 0 0; /* gap from H1 — now an internal gap within the same
+                        fixed box, not the old page-content-based mechanism */
+  text-align: center;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: 0;
+  text-transform: none; /* .page-title (its parent) now sets uppercase for
+                            the H2-style page title — this is real project
+                            /photo-title text, not a heading, and must not
+                            inherit that transform */
+}
+
+.gallery-images {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* 360px default */
+}
+
+.gallery-image {
+  width: 100%;
+  background: #D9D9D9; /* placeholder fill until real photos are in */
+}
+
+.gallery-image--portrait {
+  aspect-ratio: 3 / 4;
+}
+
+.gallery-image--landscape {
+  aspect-ratio: 4 / 3;
+}
+
+@media (max-width: 1199px) {
+  .gallery-detail-page .page-content {
+    /* The 16px "content's own top spacing" half of the combined 32px gap —
+       added on top of the measured header height (which already includes
+       the fixed box's other 16px via its own padding-bottom above).
+       Bounded to mobile only — at 1200px+ the sidebar/content columns sit
+       side by side instead of stacked, so this mobile-specific calculation
+       doesn't apply; the shared .content-page rule's flat 60px padding-top
+       takes over there instead. Without this bound, this rule's equal
+       specificity plus later source position was silently overriding that
+       intended 60px at every desktop width too. */
+    padding-top: calc(var(--header-height, 130px) + 16px);
+  }
+}
+
+@media (min-width: 480px) {
+  .gallery-detail-page .page {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  .gallery-detail-page .page-title {
+    /* Diverges from the shared chrome side-gap (which stays 20px for
+       About/Work's H1) because the gallery name now shares this same box
+       and needs to align with the content's 32px inset instead — per the
+       original spec that the title "fits the width of the container for
+       H1," meaning H1's own container must match that 32px value here. */
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  .gallery-images {
+    gap: 32px;
+  }
+}
+
+/* ==========================================================================
+   Gallery detail page, 1200px+ (covers 1400 too — identical per spec).
+   Sidebar reuses the About/Work pattern (fixed, auto-width, hugs the H1)
+   but this page's .page-title wraps BOTH the H1 and the gallery name, so
+   the shared .content-page rule (built assuming .page-title = just the H1)
+   needs explicit adjustment here rather than being trusted as-is.
+   ========================================================================== */
+@media (min-width: 1200px) {
+  .gallery-detail-page .page {
+    padding-left: 0;
+    padding-right: 0; /* the 480px mobile override above no longer applies */
+  }
+
+  .gallery-detail-page .page-title {
+    /* Resets the mobile-specific 32px side padding — at this breakpoint
+       the shared .content-page rule's own 60px padding takes over instead,
+       since nothing here overrides it further. */
+    padding-left: 60px;
+    padding-right: 60px;
+  }
+
+  .gallery-detail-page .page-content {
+    width: 800px; /* fixed column, not About's 588/748px or Work's centered grid */
+  }
+
+  .gallery-title {
+    /* Overrides this element's own mobile rule (text-align:center) — direct
+       declarations don't get replaced by inheriting the sidebar's left
+       alignment, so this has to be stated explicitly. */
+    width: 100%; /* wraps within whatever width the sidebar box already
+                    has (driven by the H1 alone), rather than contributing
+                    its own — often longer — text width back into that
+                    calculation */
+    text-align: left;
+    margin-top: 60px; /* replaces the mobile 12px gap from H1 */
+  }
+
+  .gallery-images {
+    gap: 60px;
+  }
+
+  .gallery-image--portrait {
+    width: 602px;
+    height: 800px;
+    aspect-ratio: auto;
+  }
+
+  .gallery-image--landscape {
+    width: 800px;
+    height: 602px;
+    aspect-ratio: auto;
+  }
+  /* Portrait images end up narrower than the 800px container. No explicit
+     alignment rule is needed for that: .gallery-images is a column flex
+     container, and a child with an explicit width no longer stretches to
+     fill the cross-axis, defaulting to flex-start — which is exactly the
+     flush-left placement confirmed by measuring the mockup. */
+}
+
+/* ==========================================================================
+   Gallery detail page, 1600px+ (covers 1920 too — identical per spec).
+   Same logic as 1200/1400 — only the container width and image dimensions
+   change. The H1↔H2 gap and the gap between images both stay 60px, already
+   set at 1200px, so nothing needs restating for either of those here.
+   ========================================================================== */
+@media (min-width: 1600px) {
+  .gallery-detail-page .page-content {
+    width: 986px;
+  }
+
+  .gallery-image--portrait {
+    width: 742px;
+    height: 986px;
+  }
+
+  .gallery-image--landscape {
+    width: 986px;
+    height: 742px;
+  }
+}
+
+/* ==========================================================================
+   Gallery detail page, 1920px+: the gallery title's typography should
+   track the site's 1920px body-text scale (24px/32px), same as About's
+   paragraphs and Work's captions at this breakpoint — it was left on the
+   1600px body-text size (18px/24px) by omission, not by design.
+   ========================================================================== */
+@media (min-width: 1920px) {
+  .gallery-title {
+    font-size: 24px;
+    line-height: 32px;
+  }
+}
+
+/* ==========================================================================
+   Content pages, 1920px+: two fixed-width columns instead of one.
+   Column 1 = lead paragraph, column 2 = the H2 sections — confirmed as the
+   general rule for this layout, not a one-off for this page.
+   ========================================================================== */
+@media (min-width: 1920px) {
+  .content-page .page-title {
+    font-size: 120px;
+  }
+
+  .content-page .menu {
+    gap: 40px;
+  }
+
+  .content-page .menu__item {
+    font-size: 40px;
+    letter-spacing: 0; /* menu tracking is normally -0.6% (--tracking-tight) —
+                           explicitly flat at this breakpoint per spec */
+  }
+
+  .about-page .page-content {
+    display: flex;
+    flex-direction: row;
+    gap: 60px;
+    width: auto; /* two fixed-width children below define the real width,
+                    not this container */
+  }
+
+  .about-page .col-lead,
+  .about-page .col-sections {
+    width: 612px;
+    flex-shrink: 0;
+  }
+
+  .about-page .col-sections > h2:first-child {
+    /* Below 1920px this same H2's 40px margin-top is correct — it collapses
+       with .col-lead's paragraph margin in single-column flow, producing
+       the intended section gap. But once .col-lead/.col-sections become
+       flex items (this breakpoint), each is its own box: that margin no
+       longer collapses with anything outside it and just pushes this
+       column's content down from the top, misaligning it against the
+       lead column. Zeroing it here (and only here) keeps both columns
+       flush at the top while leaving the narrower-breakpoint behavior intact. */
+    margin-top: 0;
+  }
+
+  .about-page .page-content p {
+    font-size: 24px;
+    line-height: 32px;
+  }
+
+  .about-page .page-content h2 {
+    font-size: 32px;
+  }
+
+  .about-page .page-content h2,
+  .about-page .page-content p {
+    /* Section/paragraph rhythm doubles at this breakpoint (10px → 20px).
+       Applying this to both columns is harmless — the lead column only
+       has one paragraph, so there's nothing adjacent for it to space
+       against; the visible effect is entirely in .col-sections. */
+    margin-bottom: 20px;
+  }
+}
+
+/* ==========================================================================
+   Contacts page. Content is bottom-anchored within the space between the
+   fixed header and fixed menu, not top-anchored like About/Work — this
+   needs an explicit height to align "to the bottom" within, rather than
+   relying on natural document flow.
+   Side padding needs no override here — the shared 20px --side-gap already
+   matches this page's spec at both 360 and 480 (unlike Work, which needed
+   its own wider value at 480).
+   ========================================================================== */
+.contacts-page .page {
+  /* The generic .page rule reserves bottom space for the menu via
+     padding-bottom — but .contacts-content (below) already calculates its
+     own precise bottom spacing via min-height + padding-bottom. Keeping
+     both would double-count that reserved space. */
+  padding-bottom: 0;
+}
+
+.contacts-content {
+  min-height: calc(100dvh - var(--menu-height) - var(--menu-bottom-gap));
+  padding-top: var(--header-height, 130px);
+  padding-bottom: 40px; /* the 40px gap to the menu — this box's bottom
+                            edge is defined to land exactly at the menu's
+                            top edge, so this padding IS that gap */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* mobile: .contacts-photo is hidden (below),
+                                 so .contact-info is the only visible child
+                                 and this still pushes it to the bottom
+                                 exactly as before */
+}
+
+.contacts-photo {
+  display: none; /* no photo on this page below 1200px */
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 40px; /* between the Email and Instagram sections */
+}
+
+.contact-section h2 {
+  /* Overrides the shared .page-content h2 rule's margin-top:40px — this
+     page uses flex `gap` on .contacts-content (above) for the between-
+     section spacing instead, so keeping that margin here would double it
+     up (flex gap and margin both add space; they don't collapse together
+     the way adjacent block-level margins do). Typography (Anton, uppercase,
+     20px) still comes from that shared rule — only margin is reset here. */
+  margin: 0 0 10px;
+}
+
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px; /* icon-to-text spacing */
+  /* Color and its hover/press states come for free from the site-wide
+     a:hover / a:active rules — this is a plain <a> tag, no extra color
+     CSS needed here. */
+}
+
+.contact-link__text {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: 0;
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   Contacts page, 1200px+ (covers 1400 too — identical per spec).
+   Photo appears (hidden below this breakpoint), positioned near the top;
+   the email/Instagram block anchors near the bottom instead — same
+   justify-content: space-between technique already used for the sidebar's
+   own H1-top / menu-bottom layout, just applied to this content column.
+   No left inset: content sits flush against the sidebar, per spec.
+   ========================================================================== */
+@media (min-width: 1200px) {
+  .contacts-page .page-content {
+    width: auto; /* overrides About's fixed 588px column width */
+  }
+
+  .contacts-content {
+    min-height: 100dvh; /* full viewport — desktop's menu lives inside the
+                            sidebar itself, not as a separate overlapping
+                            fixed bar the way it does on mobile, so there's
+                            no menu height to subtract here */
+    padding: 60px 0;
+    justify-content: space-between; /* photo at top, info block at bottom */
+  }
+
+  .contacts-photo {
+    display: block;
+    width: 586px;
+    height: 441px;
+    background: #D9D9D9; /* placeholder fill until a real photo is in */
+  }
+}
+
+/* ==========================================================================
+   Contacts page, 1920px+: photo grows to 806x606 (no longer shared with
+   1600, which now matches 1200/1400's 586x441 instead). H2→link and
+   between-section spacing both grow too; icon size already scales via the
+   global .icon rule (32px at 1920px) — nothing to add here for that.
+   Icon-to-text gap stays 10px, unchanged.
+   ========================================================================== */
+@media (min-width: 1920px) {
+  .contacts-photo {
+    width: 806px;
+    height: 606px;
+  }
+
+  .contact-section h2 {
+    margin-bottom: 20px;
+  }
+
+  .contact-info {
+    gap: 40px;
+  }
+}

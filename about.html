@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — Marina Agliullina</title>
+
+<!-- TEMP: Google Fonts CDN — swap to self-hosted @font-face once .woff2 files are ready -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css?v=2">
+</head>
+<body class="content-page about-page">
+
+<main class="page">
+  <h1 class="page-title">ABOUT</h1>
+
+  <div class="page-content">
+    <div class="col-lead">
+      <p>Marina Agliullina is a fashion, portrait, and fine art photographer. As an artists, her favourite themes to explore are womanhood, female body, female sexuality, nontoxic masculinity, and paradoxes of urban life. She works with digital, analog, and mobile photography.</p>
+    </div>
+
+    <div class="col-sections">
+      <h2>Selected Exhibitions</h2>
+      <p>2018 – Circus, group show curated by Andrey Bartenev, Zdes Na Taganke gallery, Moscow, RU</p>
+      <p>2017 – Black &amp; White Here, group show curated by Andrey Bartenev, Zdes Na Taganke gallery, Moscow, RU</p>
+
+      <h2>Selected Print Publications</h2>
+      <p>2025 – Eternal Magazine, Fine Art issue #2 (Spain)</p>
+      <p>2024 – Agidel Magazine, issue #13 (Spain)</p>
+
+      <h2>Awards</h2>
+      <p>2026 – Women In Art Prize, long list (UK)</p>
+    </div>
+  </div>
+</main>
+
+<!-- Solid backdrop behind the fixed menu — only needed on mobile, where the
+     menu spans the full width and content scrolls underneath it. At 1200px+
+     the sidebar and content occupy separate columns, so there's no overlap
+     to hide (hidden via CSS at that breakpoint). -->
+<div class="menu-backdrop" aria-hidden="true"></div>
+
+<nav class="menu" aria-label="Primary">
+  <a href="index.html" class="menu__item menu__item--left">main</a>
+  <a href="work.html" class="menu__item menu__item--center">work</a>
+  <a href="contacts.html" class="menu__item menu__item--right">contacts</a>
+</nav>
+
+<script src="layout.js"></script>
+</body>
+</html>
