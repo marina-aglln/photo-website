@@ -64,7 +64,18 @@ The website design is inspired by *a catalogue of concrete*, *a white cube space
 |Text |--color-text |#FDFF87
 |Hover/Pressed |--color-interactive |#87EDFF
 
+### Accessibility Check
 Contrast ratio: 4.53:1 — passes WCAG AA for normal text (needs 4.5:1) and large text.
+
+**Fonts** are self-hosted in assets/fonts/, regular weight only.
+
+*Anton* for headings and the menu (anton.woff2, with the TTF as a fallback).
+*Inter* for body text (a variable TTF). *So far, a woff2 file for this font created bugs, I keep looking for a working option.*
+
+**Breakpoints:** under 480, 1024, 1200, 1400, 1600, 1920 + a few more coming. That many breakpoints has to be created to support proper design for the main page on as many devices as possible. In general, if not for the main page intricacies, this would be a ridiculous amount of breakpoints.
+
+## Credits
+Fonts Anton and Inter are both licensed under the SIL Open Font License 1.1.
 
 ## Copyright
 Photographs and text © Marina Agliullina. All rights reserved. Please don't reuse them without permission.
