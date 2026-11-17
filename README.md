@@ -26,7 +26,7 @@ A PDF portfolio is a common and efficient way to present a photographer's work w
 |Galleries |one file per gallery |Full photo set for one project. The "WORK" heading links back to the Work page                    |
 
 ## Structure
-'''
+,,,
 photo-website/
 ├── index.html                  Home
 ├── about.html                  About
@@ -49,7 +49,7 @@ photo-website/
         ├── galleries/
         │   └── <gallery-slug>/ cover.webp, 01.webp, 02.webp, …
         └── contacts.webp
-'''
+,,,
 
 
 ## Copyright
