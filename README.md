@@ -16,6 +16,7 @@ A PDF portfolio is a common and efficient way to present a photographer's work w
 - cut costs: building a website and owning the code is cheaper than making it with a website builder.
 
 ## Pages
+
 |Page      |File	               |What it does                                                                                      |
 |:---------|:--------------------|:-------------------------------------------------------------------------------------------------|
 |Home      |index.html           |Name split across the top and bottom of the screen, with an auto-advancing slideshow in the middle|
