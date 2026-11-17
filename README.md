@@ -1,4 +1,5 @@
 # Photography Portfolio Website
+*Last updated: Nov 17, 2026 (2:09 PM CET)*
 A simple and easy to navigate website for the photographer, i.e. me, with the focus of the photographs. It's still in the works, updates are rolled out gradually.
 
 **Live website:** [marinatakespictures.com](https://marinatakespictures.com/)
@@ -43,7 +44,7 @@ photo-website/
 │
 └── assets/
     ├── fonts/                  Anton and Inter, self-hosted
-    ├── pdf/                    PDFs of print publications (uploaded to repo but not live as per Nov 17, 2026)
+    ├── pdf/                    PDFs of print publications
     └── images/
         ├── home/               slide-01.webp … slide-12.webp
         ├── galleries/
