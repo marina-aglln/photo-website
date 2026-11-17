@@ -53,6 +53,7 @@ photo-website/
 
 ## Design Concept
 The website design is inspired by *a catalogue of concrete*, *a white cube space* typical for a contemporary art gallery, and *brutalist architecture*.
+
 <img width="700" height="700" alt="8c560f25da0a8a1f22ecf2b7adffee91-3423698235" src="https://github.com/user-attachments/assets/320b8213-ddbd-403f-a86e-61aeb3ffc8e5" />
 
 ## Design System
