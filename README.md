@@ -25,5 +25,32 @@ A PDF portfolio is a common and efficient way to present a photographer's work w
 |Contacts	 |contacts.html        |Email (click to copy) and Instagram (opens in a new tab, or the app on a phone)                   |
 |Galleries |one file per gallery |Full photo set for one project. The "WORK" heading links back to the Work page                    |
 
+## Structure
+
+photo-website/
+├── index.html                  Home
+├── about.html                  About
+├── work.html                   Work (gallery grid)
+├── contacts.html               Contacts
+├── <gallery-slug>.html         One page per gallery (9 files)
+│
+├── style.css                   The only stylesheet
+├── layout.js                   Measures fixed header height and sidebar width
+├── script.js                   Homepage slideshow
+├── contacts.js                 Click-to-copy email
+├── contacts-photo.js           Hides the Contacts photo when there's no room
+├── gallery-images.js           Detects portrait/landscape for gallery photos
+│
+└── assets/
+    ├── fonts/                  Anton and Inter, self-hosted
+    ├── pdf /                   PDFs of print publications (not uploaded yet as per Nov 17, 2026)
+    └── images/
+        ├── home/               slide-01.webp … slide-12.webp
+        ├── galleries/
+        │   └── <gallery-slug>/ cover.webp, 01.webp, 02.webp, …
+        └── contacts.webp
+
+
+
 ## Copyright
 Photographs and text © Marina Agliullina. All rights reserved. Please don't reuse them without permission.
