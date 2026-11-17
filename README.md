@@ -1,5 +1,6 @@
 # Photography Portfolio Website
 *Last updated: Nov 17, 2026 (2:09 PM CET)*
+
 A simple and easy to navigate website for the photographer, i.e. me, with the focus of the photographs. It's still in the works, updates are rolled out gradually.
 
 **Live website:** [marinatakespictures.com](https://marinatakespictures.com/)
