@@ -43,7 +43,7 @@ photo-website/
 │
 └── assets/
     ├── fonts/                  Anton and Inter, self-hosted
-    ├── pdf/                    PDFs of print publications (not uploaded yet as per Nov 17, 2026)
+    ├── pdf/                    PDFs of print publications (uploaded to repo but not live as per Nov 17, 2026)
     └── images/
         ├── home/               slide-01.webp … slide-12.webp
         ├── galleries/
