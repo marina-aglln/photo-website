@@ -64,7 +64,7 @@ The website design is inspired by *a catalogue of concrete*, *a white cube space
 |Text |--color-text |#FDFF87
 |Hover/Pressed |--color-interactive |#87EDFF
 
-### Accessibility Check
+### Accessibility check:
 Contrast ratio: 4.53:1 — passes WCAG AA for normal text (needs 4.5:1) and large text.
 
 **Fonts** are self-hosted in assets/fonts/, regular weight only.
